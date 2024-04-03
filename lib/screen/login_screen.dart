@@ -274,7 +274,7 @@ class _LoginScreenState extends State<LoginScreen> {
           content: SizedBox(
             height: 50,
             child: Center(
-              child: CircularProgressIndicator(),
+               child: CircularProgressIndicator(color: Colors.green),
             ),
           ),
         );
@@ -319,7 +319,7 @@ class _LoginScreenState extends State<LoginScreen> {
           content: SizedBox(
             height: 50,
             child: Center(
-              child: CircularProgressIndicator(),
+             child: CircularProgressIndicator(color: Colors.green),
             ),
           ),
         );

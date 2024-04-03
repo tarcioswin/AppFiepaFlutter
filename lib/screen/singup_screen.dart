@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+// ignore: depend_on_referenced_packages
 import 'package:flutter_masked_text2/flutter_masked_text2.dart'; // Import the package
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -281,7 +282,7 @@ class _SignupScreenState extends State<SignupScreen> {
           content: SizedBox(
             height: 50,
             child: Center(
-              child: CircularProgressIndicator(),
+             child: CircularProgressIndicator(color: Colors.green),
             ),
           ),
         );
