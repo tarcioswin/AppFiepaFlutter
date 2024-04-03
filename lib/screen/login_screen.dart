@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'forgot_screen.dart';
 import 'singup_screen.dart';
 import 'main_screen.dart';
@@ -22,12 +23,35 @@ class _LoginScreenState extends State<LoginScreen> {
   final _passwordController = TextEditingController();
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   bool _isPasswordObscured = true;
+  bool _stayLoggedIn = false;
 
   // Function to toggle password visibility
   void _togglePasswordVisibility() {
     setState(() {
       _isPasswordObscured = !_isPasswordObscured;
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _checkLoginStatus();
+  }
+
+  Future<void> _checkLoginStatus() async {
+    final prefs = await SharedPreferences.getInstance();
+    final stayLoggedIn = prefs.getBool('stayLoggedIn') ?? false;
+
+    if (stayLoggedIn) {
+      final currentUser = FirebaseAuth.instance.currentUser;
+      if (currentUser != null) {
+        // User is logged in, navigate to MainScreen
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => const MainScreen()));
+        });
+      }
+    }
   }
 
   @override
@@ -157,8 +181,31 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 30),
-
+                  const SizedBox(height: 5), // Adjust spacing as needed
+                  SwitchListTile(
+                    value: _stayLoggedIn,
+                    onChanged: (bool value) {
+                      setState(() {
+                        _stayLoggedIn = value;
+                      });
+                    },
+                    title: const Text(
+                      'Permanecer conectado',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                         color: Color.fromARGB(255, 238, 241, 8),// Adjust the text color as needed
+                      ),
+                    ),
+                    activeColor: Colors.grey, // Color of the thumb when active
+                    activeTrackColor: const Color.fromARGB(255, 1, 138, 24), // Color of the track when active
+                    inactiveThumbColor:
+                        Colors.grey, // Color of the thumb when inactive
+                    inactiveTrackColor: Colors
+                        .grey.shade400, // Color of the track when inactive
+                  ),
+                  const SizedBox(
+                      height: 5), // Space before the "Acessar" button
                   ElevatedButton(
                     onPressed: () => _login(context),
                     style: ElevatedButton.styleFrom(
@@ -166,8 +213,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       backgroundColor: const Color.fromARGB(255, 1, 138, 24),
                       elevation: 5,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
+                          borderRadius: BorderRadius.circular(30)),
                       padding: const EdgeInsets.symmetric(
                           horizontal: 100, vertical: 15),
                     ),
@@ -274,7 +320,7 @@ class _LoginScreenState extends State<LoginScreen> {
           content: SizedBox(
             height: 50,
             child: Center(
-               child: CircularProgressIndicator(color: Colors.green),
+              child: CircularProgressIndicator(color: Colors.green),
             ),
           ),
         );
@@ -288,6 +334,9 @@ class _LoginScreenState extends State<LoginScreen> {
       );
 
       if (userCredential.user != null) {
+        // Save the stay logged in preference
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setBool('stayLoggedIn', _stayLoggedIn);
         // Close the loading dialogr
         Navigator.pop(context);
         Navigator.push(context,
@@ -319,7 +368,7 @@ class _LoginScreenState extends State<LoginScreen> {
           content: SizedBox(
             height: 50,
             child: Center(
-             child: CircularProgressIndicator(color: Colors.green),
+              child: CircularProgressIndicator(color: Colors.green),
             ),
           ),
         );
@@ -358,9 +407,9 @@ class _LoginScreenState extends State<LoginScreen> {
         if (docSnapshot.exists) {
           // User is already registered
           Navigator.pop(context); // Dismiss the loading dialog
-         Navigator.push(context,
-            MaterialPageRoute(builder: (context) => const MainScreen()));
-            return; 
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const MainScreen()));
+          return;
         }
 
         // User is not registered, proceed to save their details
@@ -372,8 +421,8 @@ class _LoginScreenState extends State<LoginScreen> {
         Navigator.pop(context); // Dismiss the loading dialog
         showLoginError(context, 'Registro de Usuário realizado com sucesso!',
             onSuccess: () {
-         Navigator.push(context,
-            MaterialPageRoute(builder: (context) => const MainScreen()));
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const MainScreen()));
         });
       }
     } catch (e) {

@@ -84,23 +84,9 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: _isSearching
-            ? BackButton(
-                color: Colors.white,
-                onPressed: () {
-                  if (_isSearching) {
-                    _stopSearching();
-                  } else {
-                    Navigator.of(context).pop();
-                  }
-                },
-              )
-            : IconButton(
-                icon: const Icon(Icons.arrow_back, color: Colors.white),
-                onPressed: () => Navigator.of(context).pop(),
-              ),
-        backgroundColor: const Color.fromARGB(255, 1, 138, 24),
-        title: _isSearching ? _buildSearchField() : const Text(""),
+          backgroundColor: const Color.fromARGB(255, 1, 138, 24),
+        title: _isSearching ? _buildSearchField() : const Text("Feira da Indústria do Pará",
+         style: TextStyle(color: Colors.white, fontSize: 20)),
         actions: _buildActions(),
         centerTitle: true,
       ),
