@@ -99,7 +99,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                   Container(
                     width: 360, // Specify the width you want
-                    height: 55,
+                    height: 50,
                     decoration: BoxDecoration(
                       color: const Color.fromARGB(
                           255, 209, 207, 207), // Background color of the field
@@ -136,7 +136,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: 20),
                   Container(
                     width: 360, // Specify the width you want
-                    height: 55,
+                    height: 50,
                     decoration: BoxDecoration(
                       color: const Color.fromARGB(
                           255, 209, 207, 207), // Background color of the field
@@ -309,6 +309,8 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
+
+
 
   Future<void> _login(BuildContext context) async {
     // Show loading dialog
