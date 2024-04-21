@@ -4,10 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'forgot_screen.dart';
-import 'singup_screen.dart';
 import 'main_screen.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+
+import 'singup_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -25,13 +26,6 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _isPasswordObscured = true;
   bool _stayLoggedIn = false;
 
-  // Function to toggle password visibility
-  void _togglePasswordVisibility() {
-    setState(() {
-      _isPasswordObscured = !_isPasswordObscured;
-    });
-  }
-
   @override
   void initState() {
     super.initState();
@@ -41,43 +35,44 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> _checkLoginStatus() async {
     final prefs = await SharedPreferences.getInstance();
     final stayLoggedIn = prefs.getBool('stayLoggedIn') ?? false;
+    _stayLoggedIn = stayLoggedIn; // Update local _stayLoggedIn with shared pref value
 
     if (stayLoggedIn) {
-      final currentUser = FirebaseAuth.instance.currentUser;
-      if (currentUser != null) {
-        // User is logged in, navigate to MainScreen
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          Navigator.of(context).pushReplacement(
+      _auth.authStateChanges().listen((User? user) {
+        if (user != null) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            Navigator.of(context).pushReplacement(
               MaterialPageRoute(builder: (context) => const MainScreen()));
-        });
-      }
+          });
+        }
+      });
     }
+  }
+
+  void _togglePasswordVisibility() {
+    setState(() {
+      _isPasswordObscured = !_isPasswordObscured;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    // Use a Stack to layer the background image behind your login form
     return Scaffold(
       body: Stack(
-        fit: StackFit
-            .expand, // Ensure the background image covers the whole screen
+        fit: StackFit.expand,
         children: [
-          // Background Image
           Opacity(
-            opacity:
-                0.9, // Adjust the opacity as needed, 1.0 is fully opaque, 0.0 is fully transparent
+            opacity: 0.9,
             child: Image.asset(
-              'lib/images/FIEPAImage.jpg', // Assuming .jpg is a typo and you meant .png as previously mentioned
-              fit: BoxFit.cover, // Cover the screen size
+              'lib/images/FIEPAImage.jpg',
+              fit: BoxFit.cover,
             ),
           ),
           Center(
             child: SingleChildScrollView(
-              // Makes the content scrollable
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // Image with shadow
                   Container(
                     decoration: BoxDecoration(
                       boxShadow: [
@@ -85,103 +80,20 @@ class _LoginScreenState extends State<LoginScreen> {
                           color: Colors.grey.withOpacity(0.8),
                           spreadRadius: 5,
                           blurRadius: 17,
-                          offset: const Offset(0, 3), // Position of shadow
+                          offset: const Offset(0, 3),
                         ),
                       ],
                     ),
                     child: ClipRRect(
-                      borderRadius:
-                          BorderRadius.circular(20.0), // Rounded corners
+                      borderRadius: BorderRadius.circular(20.0),
                       child: Image.asset('lib/images/LogoFipa.png', width: 300),
                     ),
                   ),
                   const SizedBox(height: 60),
-
-                  Container(
-                    width: 360, // Specify the width you want
-                    height: 50,
-                    decoration: BoxDecoration(
-                      color: const Color.fromARGB(
-                          255, 209, 207, 207), // Background color of the field
-                      borderRadius: BorderRadius.circular(15.0),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.5),
-                          spreadRadius: 1,
-                          blurRadius: 6,
-                          offset: const Offset(0, 3),
-                        ),
-                      ],
-                    ),
-                    child: TextFormField(
-                      controller: _emailController,
-                      keyboardType: TextInputType.emailAddress,
-                      decoration: InputDecoration(
-                        labelText: 'Email',
-                        filled: true,
-                        fillColor: Colors
-                            .transparent, // Make fillColor transparent so container color shows
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15.0),
-                          borderSide: BorderSide.none,
-                        ),
-                        prefixIcon: const Icon(Icons.email),
-                        labelStyle: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
-
+                  buildEmailTextField(),
                   const SizedBox(height: 20),
-                  Container(
-                    width: 360, // Specify the width you want
-                    height: 50,
-                    decoration: BoxDecoration(
-                      color: const Color.fromARGB(
-                          255, 209, 207, 207), // Background color of the field
-                      borderRadius: BorderRadius.circular(15.0),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.5),
-                          spreadRadius: 1,
-                          blurRadius: 6,
-                          offset: const Offset(0, 3),
-                        ),
-                      ],
-                    ),
-                    child: TextField(
-                      controller: _passwordController,
-                      obscureText:
-                          _isPasswordObscured, // Use the state variable here
-                      decoration: InputDecoration(
-                        labelText: 'Senha',
-                        filled: true,
-                        fillColor: Colors
-                            .transparent, // Make fillColor transparent so container color shows
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(25.0),
-                          borderSide: BorderSide.none,
-                        ),
-                        prefixIcon: const Icon(Icons.lock),
-                        labelStyle: const TextStyle(
-                          // Specify label style here
-                          fontWeight: FontWeight.bold,
-                        ),
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            // Change the icon based on the state
-                            _isPasswordObscured
-                                ? Icons.visibility
-                                : Icons.visibility_off,
-                          ),
-                          onPressed:
-                              _togglePasswordVisibility, // Toggle the password visibility
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 5), // Adjust spacing as needed
+                  buildPasswordTextField(),
+                  const SizedBox(height: 5),
                   SwitchListTile(
                     value: _stayLoggedIn,
                     onChanged: (bool value) {
@@ -194,18 +106,15 @@ class _LoginScreenState extends State<LoginScreen> {
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                         color: Color.fromARGB(255, 238, 241, 8),// Adjust the text color as needed
+                        color: Color.fromARGB(255, 238, 241, 8),
                       ),
                     ),
-                    activeColor: Colors.grey, // Color of the thumb when active
-                    activeTrackColor: const Color.fromARGB(255, 1, 138, 24), // Color of the track when active
-                    inactiveThumbColor:
-                        Colors.grey, // Color of the thumb when inactive
-                    inactiveTrackColor: Colors
-                        .grey.shade400, // Color of the track when inactive
+                    activeColor: Colors.grey,
+                    activeTrackColor: const Color.fromARGB(255, 1, 138, 24),
+                    inactiveThumbColor: Colors.grey,
+                    inactiveTrackColor: Colors.grey.shade400,
                   ),
-                  const SizedBox(
-                      height: 5), // Space before the "Acessar" button
+                  const SizedBox(height: 5),
                   ElevatedButton(
                     onPressed: () => _login(context),
                     style: ElevatedButton.styleFrom(
@@ -213,19 +122,15 @@ class _LoginScreenState extends State<LoginScreen> {
                       backgroundColor: const Color.fromARGB(255, 1, 138, 24),
                       elevation: 5,
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30)),
+                        borderRadius: BorderRadius.circular(30)),
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 100, vertical: 15),
+                        horizontal: 100, vertical: 15),
                     ),
-                    child:
-                        const Text('Acessar', style: TextStyle(fontSize: 18)),
+                    child: const Text('Acessar', style: TextStyle(fontSize: 18)),
                   ),
-                  const SizedBox(
-                      height:
-                          20), // Space between "Acessar" button and "Criar conta"
+                  const SizedBox(height: 20),
                   TextButton(
                     onPressed: () {
-                      // Action for "Criar conta"
                       Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -240,12 +145,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(
-                      height:
-                          0), // Space between "Criar conta" and the new label
+                  const SizedBox(height: 0),
                   TextButton(
                     onPressed: () {
-                      // Action for the new label, e.g., navigate to a "Forgot Password?" page
                       Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -254,51 +156,42 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: const Text(
                       "Esqueceu a senha?",
                       style: TextStyle(
-                        fontSize: 18, // Adjust as per design requirements
+                        fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: Color.fromARGB(255, 252, 248,
-                            250), // Ensuring it matches your app theme color
+                        color: Color.fromARGB(255, 252, 248, 250),
                       ),
                     ),
                   ),
                   const SizedBox(height: 20),
-                  // Google Sign-in Button
                   ElevatedButton.icon(
                     onPressed: _enterWithGoogle,
-                    icon: Image.asset('lib/images/google_logo.png',
-                        height: 24, width: 24),
-                    label: const Text('Entrar com Google',
-                        style: TextStyle(fontSize: 18, color: Colors.black)),
+                    icon: Image.asset('lib/images/google_logo.png', height: 24, width: 24),
+                    label: const Text('Entrar com Google', style: TextStyle(fontSize: 18, color: Colors.black)),
                     style: ElevatedButton.styleFrom(
                       foregroundColor: Colors.black,
-                      backgroundColor: Colors.white, // Text color
-                      minimumSize: const Size(240, 50), // Button size
+                      backgroundColor: Colors.white,
+                      minimumSize: const Size(240, 50),
                       elevation: 4,
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30)),
-                      side: BorderSide(
-                          color: Colors.grey.shade300), // Border color
+                        borderRadius: BorderRadius.circular(30)),
+                      side: BorderSide(color: Colors.grey.shade300),
                     ),
                   ),
                   const SizedBox(height: 20),
-                  // Google Sign-in Button
                   ElevatedButton.icon(
                     onPressed: () {
                       // Google sign-in logic
                     },
-                    icon: Image.asset('lib/images/apple_logo.png',
-                        height: 34, width: 34),
-                    label: const Text('Entrar com Apple',
-                        style: TextStyle(fontSize: 18, color: Colors.black)),
+                    icon: Image.asset('lib/images/apple_logo.png', height: 34, width: 34),
+                    label: const Text('Entrar com Apple', style: TextStyle(fontSize: 18, color: Colors.black)),
                     style: ElevatedButton.styleFrom(
                       foregroundColor: Colors.black,
-                      backgroundColor: Colors.white, // Text color
-                      minimumSize: const Size(240, 50), // Button size
+                      backgroundColor: Colors.white,
+                      minimumSize: const Size(240, 50),
                       elevation: 4,
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30)),
-                      side: BorderSide(
-                          color: Colors.grey.shade300), // Border color
+                        borderRadius: BorderRadius.circular(30)),
+                      side: BorderSide(color: Colors.grey.shade300),
                     ),
                   ),
                 ],
@@ -310,13 +203,88 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  Widget buildEmailTextField() {
+    return Container(
+      width: 360,
+      height: 50,
+      decoration: BoxDecoration(
+        color: const Color.fromARGB(255, 209, 207, 207),
+        borderRadius: BorderRadius.circular(15.0),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            spreadRadius: 1,
+            blurRadius: 6,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: TextFormField(
+        controller: _emailController,
+        keyboardType: TextInputType.emailAddress,
+        decoration: InputDecoration(
+          labelText: 'Email',
+          filled: true,
+          fillColor: Colors.transparent,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(15.0),
+            borderSide: BorderSide.none,
+          ),
+          prefixIcon: const Icon(Icons.email),
+          labelStyle: const TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+    );
+  }
 
+  Widget buildPasswordTextField() {
+    return Container(
+      width: 360,
+      height: 50,
+      decoration: BoxDecoration(
+        color: const Color.fromARGB(255, 209, 207, 207),
+        borderRadius: BorderRadius.circular(15.0),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            spreadRadius: 1,
+            blurRadius: 6,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: TextField(
+        controller: _passwordController,
+        obscureText: _isPasswordObscured,
+        decoration: InputDecoration(
+          labelText: 'Senha',
+          filled: true,
+          fillColor: Colors.transparent,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(15.0),
+            borderSide: BorderSide.none,
+          ),
+          prefixIcon: const Icon(Icons.lock),
+          labelStyle: const TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+          suffixIcon: IconButton(
+            icon: Icon(
+              _isPasswordObscured ? Icons.visibility : Icons.visibility_off,
+            ),
+            onPressed: _togglePasswordVisibility,
+          ),
+        ),
+      ),
+    );
+  }
 
   Future<void> _login(BuildContext context) async {
-    // Show loading dialog
     showDialog(
       context: context,
-      barrierDismissible: false, // User must not close the dialog manually
+      barrierDismissible: false,
       builder: (BuildContext context) {
         return const AlertDialog(
           content: SizedBox(
@@ -336,105 +304,91 @@ class _LoginScreenState extends State<LoginScreen> {
       );
 
       if (userCredential.user != null) {
-        // Save the stay logged in preference
         final prefs = await SharedPreferences.getInstance();
         await prefs.setBool('stayLoggedIn', _stayLoggedIn);
-        // Close the loading dialogr
+
         Navigator.pop(context);
-        Navigator.push(context,
+        Navigator.pushReplacement(context,
             MaterialPageRoute(builder: (context) => const MainScreen()));
       } else {
-        // Close the loading dialog
         Navigator.pop(context);
-
-        // Show login failed error
         showLoginError(context,
             'Credenciais incorretas. Tente novamente ou recupere sua senha.');
       }
     } catch (e) {
-      // Close the loading dialog
       Navigator.pop(context);
-      // Show an error message.
       showLoginError(
           context, 'Email ou senha inválidos. Por favor, tente novamente!');
     }
   }
 
-  Future<void> _enterWithGoogle() async {
-    // Show loading dialog
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return const AlertDialog(
-          content: SizedBox(
-            height: 50,
-            child: Center(
-              child: CircularProgressIndicator(color: Colors.green),
-            ),
+
+
+
+
+Future<void> _enterWithGoogle() async {
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      return const AlertDialog(
+        content: SizedBox(
+          height: 50,
+          child: Center(
+            child: CircularProgressIndicator(color: Colors.green),
           ),
-        );
-      },
-    );
-    try {
-      // Sign out any existing Google account
-      await _googleSignIn.signOut();
-      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-
-      // Verifica se o usuário cancelou o login
-      if (googleUser == null) {
-        // Usuário cancelou o login, fecha o diálogo de carregamento
-        Navigator.pop(context);
-        return; // Sai do método para não prosseguir com o login
-      }
-
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
-
-      final OAuthCredential credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
+        ),
       );
+    },
+  );
 
-      final UserCredential userCredential =
-          await _auth.signInWithCredential(credential);
+  try {
+    await _googleSignIn.signOut();
+    final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
 
-      if (userCredential.user != null) {
-        // Check if user is already registered
-        final usersRef = FirebaseFirestore.instance
-            .collection('users')
-            .doc(userCredential.user!.uid);
-        final docSnapshot = await usersRef.get();
+    if (googleUser == null) {
+      Navigator.pop(context);
+      return;
+    }
 
-        if (docSnapshot.exists) {
-          // User is already registered
-          Navigator.pop(context); // Dismiss the loading dialog
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const MainScreen()));
-          return;
-        }
+    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
 
-        // User is not registered, proceed to save their details
+    final OAuthCredential credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+
+    final UserCredential userCredential = await _auth.signInWithCredential(credential);
+
+    if (userCredential.user != null) {
+      final prefs = await SharedPreferences.getInstance();
+      // Ensure the stayLoggedIn is set when signing in with Google
+      await prefs.setBool('stayLoggedIn', _stayLoggedIn);
+
+      final usersRef = FirebaseFirestore.instance
+          .collection('users')
+          .doc(userCredential.user!.uid);
+      final docSnapshot = await usersRef.get();
+
+      if (!docSnapshot.exists) {
         await usersRef.set({
           'name': userCredential.user!.displayName ?? 'No Name',
           'email': userCredential.user!.email ?? 'No Email',
         });
-
-        Navigator.pop(context); // Dismiss the loading dialog
-        showLoginError(context, 'Registro de Usuário realizado com sucesso!',
-            onSuccess: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const MainScreen()));
-        });
       }
-    } catch (e) {
-      Navigator.pop(context); // Dismiss the loading dialog
-      showLoginError(context, 'Google Sign In Failed: $e');
-    }
-  }
 
-  void showLoginError(BuildContext context, String message,
-      {VoidCallback? onSuccess}) {
+      Navigator.pop(context);
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const MainScreen()));
+    }
+  } catch (e) {
+    Navigator.pop(context);
+    showLoginError(context, 'Google Sign In Failed: $e');
+  }
+}
+
+
+
+  void showLoginError(BuildContext context, String message, {VoidCallback? onSuccess}) {
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -446,7 +400,7 @@ class _LoginScreenState extends State<LoginScreen> {
             TextButton(
               child: const Text('OK'),
               onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
+                Navigator.of(context).pop();
                 if (onSuccess != null) {
                   onSuccess();
                 }
