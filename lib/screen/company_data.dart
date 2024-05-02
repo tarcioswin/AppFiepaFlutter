@@ -12,7 +12,7 @@ final Map<String, Offset> companyPositions = {
   'MOTOBEL TOYOTA': const Offset(335, 425),
   'PREFEITURA M. CANAÃ DOS CARAJÁS': const Offset(335, 405),
   'BRAZAURO': const Offset(335, 380),
-  'SOLAR BEBIDAS': const Offset(335, 360),
+  'SOLAR BEBIDAS': const Offset(335, 355),
   'BANPARÁ': const Offset(335, 315),
   'BANCO DA AMAZÔNIA': const Offset(335, 290),
   'USIMIG': const Offset(335, 235),
