@@ -7,12 +7,25 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:72643442470:android:a5a3edc4a18266a7f533e7",
+        "mobilesdk_app_id": "1:72643442470:android:c2630669892c0868f533e7",
         "android_client_info": {
-          "package_name": "com.example.appfiepa"
+          "package_name": "br.org.fiepa.fipa"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "72643442470-2vfjfp16k24g3tp4b4cb7ruc7a2715qj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "br.org.fiepa.fipa",
+            "certificate_hash": "8efece61c2ec340de3809a97873c975676d0d1a6"
+          }
+        },
+        {
+          "client_id": "72643442470-bst0ns5ptqfnd8aip3aell91san85uh2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCxkOSJgi_2Xgn20ns-0dfAAVRBBxJRHEE"
@@ -20,7 +33,63 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "72643442470-bst0ns5ptqfnd8aip3aell91san85uh2.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "72643442470-2f1itld9fqalh0o05e8s6du10savukug.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.appfiepa"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:72643442470:android:a5a3edc4a18266a7f533e7",
+        "android_client_info": {
+          "package_name": "com.example.appfiepa"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "72643442470-o9jaob5qclpsja55inhtkosmg3mq0icn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.appfiepa",
+            "certificate_hash": "8efece61c2ec340de3809a97873c975676d0d1a6"
+          }
+        },
+        {
+          "client_id": "72643442470-bst0ns5ptqfnd8aip3aell91san85uh2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCxkOSJgi_2Xgn20ns-0dfAAVRBBxJRHEE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "72643442470-bst0ns5ptqfnd8aip3aell91san85uh2.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "72643442470-2f1itld9fqalh0o05e8s6du10savukug.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.appfiepa"
+              }
+            }
+          ]
         }
       }
     },
@@ -31,7 +100,20 @@
           "package_name": "com.tarcioswin.flutter"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "72643442470-dep72i2p8cns50gb8d4m5gesffa146jc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tarcioswin.flutter",
+            "certificate_hash": "8efece61c2ec340de3809a97873c975676d0d1a6"
+          }
+        },
+        {
+          "client_id": "72643442470-bst0ns5ptqfnd8aip3aell91san85uh2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCxkOSJgi_2Xgn20ns-0dfAAVRBBxJRHEE"
@@ -39,7 +121,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "72643442470-bst0ns5ptqfnd8aip3aell91san85uh2.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "72643442470-2f1itld9fqalh0o05e8s6du10savukug.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.appfiepa"
+              }
+            }
+          ]
         }
       }
     }

@@ -42,6 +42,12 @@ class _MapScreenState extends State<MapScreen> {
 
 
 void _zoomToLocation() {
+
+   if (widget.markerPosition == null) {
+    // Handle the case where there is no marker position provided
+    // You might want to default to a certain position or do nothing
+    return;
+  }
   final Size viewportSize = MediaQuery.of(context).size;
   final Offset markerPosition = widget.markerPosition!;
   double scale = 2.5; // Adjust the zoom level here
