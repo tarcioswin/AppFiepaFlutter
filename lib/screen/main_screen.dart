@@ -1,14 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timeline_tile/timeline_tile.dart';
-import 'login_screen.dart';
-import 'update_screen.dart';
 import 'about_screen.dart';
 import 'events_data.dart';
 import 'map_screen.dart';
 import 'company_data.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -43,20 +38,17 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 
-void updateSearchQuery(String newQuery) {
-  setState(() {
-    _searchQueryController.text = newQuery;
-    Offset? newMarkerPosition = companyPositions[newQuery];
-    _children[0] = MapScreen(
-      key: ValueKey(newQuery), // This ensures the widget rebuilds with new data
-      markerPosition: newMarkerPosition,
-    );
-  });
-}
-
-
-
-
+  void updateSearchQuery(String newQuery) {
+    setState(() {
+      _searchQueryController.text = newQuery;
+      Offset? newMarkerPosition = companyPositions[newQuery];
+      _children[0] = MapScreen(
+        key: ValueKey(
+            newQuery), // This ensures the widget rebuilds with new data
+        markerPosition: newMarkerPosition,
+      );
+    });
+  }
 
   Widget _buildSearchField() {
     return Autocomplete<String>(
@@ -118,9 +110,12 @@ void updateSearchQuery(String newQuery) {
                 itemCount: options.length,
                 itemBuilder: (context, index) {
                   final option = options.elementAt(index);
-                 return ListTile(
-                    leading: const Icon(Icons.place, color: Color.fromARGB(255, 240, 9, 9)),  // Icon added here
-                    title: Text(option, style: const TextStyle(color: Colors.black)),
+                  return ListTile(
+                    leading: const Icon(Icons.place,
+                        color:
+                            Color.fromARGB(255, 240, 9, 9)), // Icon added here
+                    title: Text(option,
+                        style: const TextStyle(color: Colors.black)),
                     onTap: () {
                       onSelected(option);
                     },
@@ -134,87 +129,56 @@ void updateSearchQuery(String newQuery) {
     );
   }
 
-
-
-List<Widget> _buildActions() {
-    if (_currentIndex == 0) {  // Check if the current index is 0 (Map tab)
-        return [
-            IconButton(
-              icon: const Icon(Icons.search, color: Colors.white),
-              onPressed: _startSearch,
+  List<Widget> _buildActions() {
+    if (_currentIndex == 0) {
+      // Check if the current index is 0 (Map tab)
+      return [
+        IconButton(
+          icon: const Icon(Icons.search, color: Colors.white),
+          onPressed: _startSearch,
+        ),
+        PopupMenuButton<String>(
+          icon: const Icon(Icons.menu, color: Colors.white),
+          onSelected: handleMenuAction,
+          itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+            const PopupMenuItem<String>(
+              value: 'Sobre',
+              child: ListTile(
+                leading: Icon(Icons.info_outline),
+                title: Text('Sobre'),
+              ),
             ),
-            
-            PopupMenuButton<String>(
-              icon: const Icon(Icons.menu, color: Colors.white),
-              onSelected: handleMenuAction,
-              itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-                const PopupMenuItem<String>(
-                  value: 'Sair',
-                  child: ListTile(
-                    leading: Icon(Icons.exit_to_app),
-                    title: Text('Sair'),
-                  ),
-                ),
-                const PopupMenuItem<String>(
-                  value: 'Sobre',
-                  child: ListTile(
-                    leading: Icon(Icons.info_outline),
-                    title: Text('Sobre'),
-                  ),
-                ),
-                const PopupMenuItem<String>(
-                  value: 'Atualizar cadastro',
-                  child: ListTile(
-                    leading: Icon(Icons.update),
-                    title: Text('Atualizar Cadastro'),
-                  ),
-                ),
-              ],
-            ),
-        ];
+          ],
+        ),
+      ];
     } else {
-        return [
-            PopupMenuButton<String>(
-              icon: const Icon(Icons.menu, color: Colors.white),
-              onSelected: handleMenuAction,
-              itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-                const PopupMenuItem<String>(
-                  value: 'Sair',
-                  child: ListTile(
-                    leading: Icon(Icons.exit_to_app),
-                    title: Text('Sair'),
-                  ),
-                ),
-                const PopupMenuItem<String>(
-                  value: 'Sobre',
-                  child: ListTile(
-                    leading: Icon(Icons.info_outline),
-                    title: Text('Sobre'),
-                  ),
-                ),
-                const PopupMenuItem<String>(
-                  value: 'Atualizar cadastro',
-                  child: ListTile(
-                    leading: Icon(Icons.update),
-                    title: Text('Atualizar Cadastro'),
-                  ),
-                ),
-              ],
+      return [
+        PopupMenuButton<String>(
+          icon: const Icon(Icons.menu, color: Colors.white),
+          onSelected: handleMenuAction,
+          itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+            const PopupMenuItem<String>(
+              value: 'Sobre',
+              child: ListTile(
+                leading: Icon(Icons.info_outline),
+                title: Text('Sobre'),
+              ),
             ),
-        ];
+          ],
+        ),
+      ];
     }
-}
-
-
-void onTabTapped(int index) {
-  if (index != 0 && _isSearching) {
-    // If moving away from the map tab and search is active, stop searching
-    _stopSearching();
   }
-  setState(() {
-    _currentIndex = index;
-  });
-}
+
+  void onTabTapped(int index) {
+    if (index != 0 && _isSearching) {
+      // If moving away from the map tab and search is active, stop searching
+      _stopSearching();
+    }
+    setState(() {
+      _currentIndex = index;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -256,31 +220,16 @@ void onTabTapped(int index) {
 
   Future<void> handleMenuAction(String value) async {
     switch (value) {
-      case 'Sair':
-        await FirebaseAuth.instance.signOut();
-        await GoogleSignIn().signOut();
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.setBool('stayLoggedIn', false);
-        // ignore: use_build_context_synchronously
-        Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => const LoginScreen()),
-          (Route<dynamic> route) => false,
-        );
-        break;
       case 'Sobre':
         Navigator.push(context,
             MaterialPageRoute(builder: (context) => const AboutScreen()));
-        break;
-      case 'Atualizar cadastro':
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => const UpdateScreen()));
         break;
     }
   }
 }
 
-
-Map<String, List<Map<String, String>>> groupEventsByLocation(List<Map<String, dynamic>> eventData) {
+Map<String, List<Map<String, String>>> groupEventsByLocation(
+    List<Map<String, dynamic>> eventData) {
   Map<String, List<Map<String, String>>> eventsByLocation = {};
 
   for (var day in eventData) {
@@ -310,7 +259,18 @@ class AgendaScreen extends StatelessWidget {
         itemCount: eventsData.length,
         itemBuilder: (context, index) {
           final eventDay = eventsData[index];
-          final List<Widget> detailWidgets = eventDay['details'].map<Widget>((detail) {
+          final List<Widget> detailWidgets =
+              eventDay['details'].map<Widget>((detail) {
+            List<String> speakerImages =
+                List<String>.from(detail['speakerImages'] ?? []);
+            List<String> speakerNames =
+                List<String>.from(detail['speakerNames'] ?? []);
+            String title = detail['title'] ?? 'No Title Provided';
+            List<TextSpan> titleTextSpans = _formatTitle(title);
+            String eventType = detail['type'] ?? 'Unknown';
+            IconData eventTypeIcon =
+                eventType == "Painel" ? Icons.group : Icons.speaker_notes;
+
             return TimelineTile(
               alignment: TimelineAlign.manual,
               lineXY: 0.1,
@@ -328,43 +288,72 @@ class AgendaScreen extends StatelessWidget {
               ),
               endChild: Padding(
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-                child: Row(
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Icon(Icons.event,
-                                  color: Theme.of(context).colorScheme.secondary),
-                              const SizedBox(width: 8),
-                              Expanded(
-                                child: Text(detail['title'],
-                                    style: const TextStyle(fontWeight: FontWeight.bold)),
+                    Row(
+                      children: [
+                        const Icon(Icons.event,
+                            color: Color.fromARGB(255, 54, 73, 244)),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            title, // Use your title variable or the method that retrieves the title
+                            textAlign: TextAlign.left,
+                            style: const TextStyle(
+                              fontSize: 14, // Set your desired font size
+                              color: Colors.black, // Set your desired color
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
+                        const Icon(Icons.access_time,
+                            color: Color.fromARGB(255, 7, 131, 17)),
+                        const SizedBox(width: 8),
+                        Text(detail['time'] ?? 'No Time Provided'),
+                      ],
+                    ),
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
+                        const Icon(Icons.place, color: Colors.red),
+                        const SizedBox(width: 8),
+                        Expanded(
+                            child: Text(
+                                detail['location'] ?? 'No Location Provided')),
+                      ],
+                    ),
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
+                        Icon(eventTypeIcon),
+                        const SizedBox(width: 4),
+                        Text(eventType),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    // Horizontal list for speaker images
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: List.generate(speakerImages.length, (index) {
+                          return Padding(
+                            padding: const EdgeInsets.only(right: 8.0),
+                            child: GestureDetector(
+                              onTap: () => _showImageDialog(context,
+                                  speakerImages[index], speakerNames[index]),
+                              child: CircleAvatar(
+                                backgroundImage:
+                                    AssetImage(speakerImages[index]),
+                                radius: 24,
                               ),
-                            ],
-                          ),
-                          const SizedBox(height: 4),
-                          Row(
-                            children: [
-                              Icon(Icons.access_time,
-                                  color: Theme.of(context).colorScheme.secondary),
-                              const SizedBox(width: 8),
-                              Text(detail['time']),
-                            ],
-                          ),
-                          const SizedBox(height: 4),
-                          Row(
-                            children: [
-                              Icon(Icons.place,
-                                  color: Theme.of(context).colorScheme.secondary),
-                              const SizedBox(width: 8),
-                              Expanded(child: Text(detail['location'])),
-                            ],
-                          ),
-                        ],
+                            ),
+                          );
+                        }),
                       ),
                     ),
                   ],
@@ -378,13 +367,77 @@ class AgendaScreen extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: Text(
                 eventDay['date'],
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style:
+                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ),
             children: detailWidgets,
           );
         },
       ),
+    );
+  }
+
+  List<TextSpan> _formatTitle(String title) {
+    // Check for multiple prefixes and apply bold formatting
+    const List<String> boldPrefixes = ["Palestra:", "Painel:"];
+    for (String prefix in boldPrefixes) {
+      if (title.startsWith(prefix)) {
+        return [
+          TextSpan(
+              text: prefix,
+              style: const TextStyle(fontWeight: FontWeight.bold)),
+          TextSpan(text: title.substring(prefix.length)),
+        ];
+      }
+    }
+    return [TextSpan(text: title)];
+  }
+
+  void _showImageDialog(
+      BuildContext context, String imagePath, String speakerName) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: Stack(
+            clipBehavior: Clip.none,
+            alignment: Alignment.topCenter,
+            children: <Widget>[
+              Positioned(
+                right: -40.0,
+                top: -40.0,
+                child: InkResponse(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const CircleAvatar(
+                    backgroundColor: Colors.red,
+                    child: Icon(Icons.close, color: Colors.white),
+                  ),
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.all(20),
+                margin: const EdgeInsets.only(top: 20),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Image.asset(imagePath),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 16),
+                      child: Text(speakerName,
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16)),
+                    ),
+                    // Optionally add more content here
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

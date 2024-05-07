@@ -1,32 +1,30 @@
 final List<Map<String, dynamic>> eventsData = [
   {
-    'date': '22/05 | Quarta-feira',
-    'details': [
-      {
-        'time': '17h',
-        'title': 'Cerimônia de Abertura',
-        'location': 'SESI Lab - Exposição Itinerante',
-      },
-      {
-        'time': '17h',
-        'title': 'Abertura da Feira da Indústria do Pará',
-        'location': 'Grand Prix SENAI de Inovação',
-      },
-    ],
-  },
-  {
     'date': '23/05 | Quinta-feira',
     'details': [
       {
-        'time': '13h',
-        'title': 'Credenciamento e Abertura da Programação Técnica',
-        'location': 'Palco Principal',
-      },
-      {
         'time': '14h',
         'title':
-            'Painel: Liderança Responsável na Sustentabilidade dos Negócios',
-        'location': 'Sala Multiuso 10',
+            ' ESG e o Papel Fundamental das Organizações para o Desenvolvimento Sustentável',
+        'location': 'Palco Principal',
+        "speakerImages": ["lib/images/speaker1.png","lib/images/speaker1.png"],
+        "speakerNames": ["Palestrante 3","Palestrante 3"],
+        "type": "Palestra"
+      },
+      {
+        "time": "15h",
+        "title":
+            "Fortalecendo o Mercado Industrial na Amazônia: Melhores Práticas de Suprimentos",
+        "location": "Palco 1",
+        "speakerImages": [
+          "lib/images/speaker1.png",
+          "lib/images/speaker1.png",
+          "lib/images/speaker1.png",
+          "lib/images/speaker1.png",
+          "lib/images/speaker1.png"
+        ],
+        "speakerNames": ["Palestrante 1", "Palestrante 2", "Palestrante 3", "Palestrante 4", "Palestrante 5"],
+         "type": "Painel"
       },
       {
         'time': '14h às 15h',
@@ -111,12 +109,6 @@ final List<Map<String, dynamic>> eventsData = [
       },
       {
         'time': '15h',
-        'title':
-            'Painel: Fortalecendo o Mercado Industrial na Amazônia: Melhores Práticas de Suprimentos',
-        'location': 'Palco 1',
-      },
-      {
-        'time': '15h',
         'title': 'Painel: Rastreabilidade e os Desafios das Cadeias de Valor',
         'location': 'Palco 2',
       },
@@ -167,21 +159,6 @@ final List<Map<String, dynamic>> eventsData = [
         'time': '18h às 19h30',
         'title': 'A COP é NOSSA!',
         'location': 'Palco Principal',
-      },
-    ],
-  },
-  {
-    'date': '25/05 | Sábado',
-    'details': [
-      {
-        'time': 'Programação sujeita a alteração',
-        'title': 'Exposição Itinerante',
-        'location': 'SESI Lab',
-      },
-      {
-        'time': 'Programação sujeita a alteração',
-        'title': 'Premiação',
-        'location': 'Grand Prix SENAI de Inovação',
       },
     ],
   },

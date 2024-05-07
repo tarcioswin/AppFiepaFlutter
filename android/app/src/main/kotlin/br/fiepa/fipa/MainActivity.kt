@@ -1,4 +1,4 @@
-package br.org.fiepa.fipa
+package br.fiepa.fipa
 
 import io.flutter.embedding.android.FlutterActivity
 

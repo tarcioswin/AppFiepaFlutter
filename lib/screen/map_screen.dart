@@ -1,4 +1,8 @@
+// ignore_for_file: curly_braces_in_flow_control_structures
+
 import 'package:flutter/material.dart';
+import 'package:vector_math/vector_math_64.dart'
+    hide Colors; // Corrected import
 
 class MapScreen extends StatefulWidget {
   final Offset? markerPosition;
@@ -11,75 +15,144 @@ class MapScreen extends StatefulWidget {
 
 class _MapScreenState extends State<MapScreen> {
   final TransformationController _controller = TransformationController();
-
-  final double _zoomInFactor = 1.5; // How much to zoom in on double tap
+  final double _zoomInFactor = 2.5;
 
   @override
   void initState() {
     super.initState();
+    // Ensure the map is centered on the marker position after the first frame.
     WidgetsBinding.instance.addPostFrameCallback((_) {
-        _zoomToLocation();
-    
+      _zoomToLocation();
     });
   }
 
+  // Handles double tap to zoom in at the center of the current view.
+  void _onDoubleTapDown(TapDownDetails details) {
+    final RenderBox renderBox = context.findRenderObject() as RenderBox;
+    final Offset localPosition =
+        renderBox.globalToLocal(details.globalPosition);
 
+    // Get the current scale and calculate the new scale
+    final double currentScale = _controller.value.getMaxScaleOnAxis();
+    final double newScale = currentScale * _zoomInFactor;
 
-  void _onDoubleTap() {
-    final matrix = _controller.value.clone();
-    final center = matrix.getTranslation();
+    // Calculate the focal point for the new scale
+    final Matrix4 transformationMatrix = _controller.value.clone();
+    final Vector3 translation = transformationMatrix.getTranslation();
 
-    matrix.setTranslationRaw(0, 0, 0);
-    matrix.scale(_zoomInFactor);
+    // Shift the center of the viewport to the tap location
+    final double centerX = localPosition.dx;
+    final double centerY = localPosition.dy;
 
-    matrix.setTranslationRaw(
-      center.x - MediaQuery.of(context).size.width * (_zoomInFactor - 1) / 2,
-      center.y - MediaQuery.of(context).size.height * (_zoomInFactor - 1) / 2,
-      0,
-    );
-    _controller.value = matrix;
+    // Adjust the matrix to center on the tap location and scale
+    transformationMatrix.setIdentity();
+    transformationMatrix.translate(
+        translation.x +
+            (centerX - translation.x) -
+            (centerX - translation.x) * _zoomInFactor,
+        translation.y +
+            (centerY - translation.y) -
+            (centerY - translation.y) * _zoomInFactor);
+    transformationMatrix.scale(newScale);
+
+    // Apply the new transformation
+    _controller.value = transformationMatrix;
   }
 
+  // Zoom to the initial location based on the marker position.
+  void _zoomToLocation() {
+    if (widget.markerPosition == null) return;
 
-void _zoomToLocation() {
+    final Size viewportSize = MediaQuery.of(context).size;
+    final Offset markerPosition = widget.markerPosition!;
+    double scale = 1.5;
 
-   if (widget.markerPosition == null) {
-    // Handle the case where there is no marker position provided
-    // You might want to default to a certain position or do nothing
-    return;
+    // Calculate target center positions scaled by 'scale'
+    double targetCenterX = markerPosition.dx * scale;
+    double targetCenterY = markerPosition.dy * scale;
+
+    // Calculate differences from viewport center
+    double diffX = viewportSize.width / 2 - targetCenterX;
+    double diffY = viewportSize.height / 2 - targetCenterY;
+
+    // Dynamic translation limits based on the viewport and map dimensions
+    double mapWidth = viewportSize.width *
+        scale; // Assuming the map width scales with the viewport
+    double mapHeight = viewportSize.height *
+        scale; // Assuming the map height scales with the viewport
+
+    // Calculate maximum translations
+    double maxXTranslation = mapWidth - viewportSize.width;
+    double maxYTranslation = mapHeight - viewportSize.height;
+
+    // Apply clamping to ensure the map edges do not go beyond the viewport edges
+    double clampedX = diffX.clamp(-maxXTranslation, 0);
+    double clampedY = diffY.clamp(-maxYTranslation, 0);
+
+    _controller.value = Matrix4.identity()
+      ..translate(clampedX, clampedY, 0)
+      ..scale(scale);
   }
-  final Size viewportSize = MediaQuery.of(context).size;
-  final Offset markerPosition = widget.markerPosition!;
-  double scale = 2.5; // Adjust the zoom level here
 
-  // Calculate the required translation to center the marker
-  // Calculate center points for the marker at the given scale
-  double targetCenterX = markerPosition.dx * scale;
-  double targetCenterY = markerPosition.dy * scale;
-
-  // Calculate the differences to center these points
-  double diffX = viewportSize.width / 2 - targetCenterX;
-  double diffY = viewportSize.height / 2 - targetCenterY;
-
-  // Clamp these differences to make sure no part of the map goes out of bounds
-  double maxXTranslation = (380 * scale - viewportSize.width);
-  double maxYTranslation = (700 * scale - viewportSize.height);
-
-  // Ensure translations do not expose the edges of the map
-  double dx = diffX.clamp(-maxXTranslation, 0);
-  double dy = diffY.clamp(-maxYTranslation, 0);
-
-  _controller.value = Matrix4.identity()
-    ..translate(dx, dy)
-    ..scale(scale);
-}
-
-
+  // Calculate vertical adjustment for marker position based on screen height and marker's dy.
+  double calculateYAdjustment(double screenHeight, double markerDy) {
+    if (screenHeight < 550) {
+      if (markerDy > 530) {
+        return -47;
+      } else if (markerDy > 420)
+        return -40;
+      else if (markerDy > 250)
+        return -35;
+      else if (markerDy > 120)
+        return -20;
+      else
+        return -20; // Default for very low dy values or unspecified conditions
+    }else if  (screenHeight >= 550 && screenHeight < 650) {
+      if (markerDy > 530) {
+        return -35;
+      } else if (markerDy > 420)
+        return -30;
+      else if (markerDy > 250)
+        return -30;
+      else if (markerDy > 120)
+        return -14;
+      else
+        return -10; // Default for very low dy values or unspecified conditions
+    }else if  (screenHeight >= 650 && screenHeight < 750) {
+      if (markerDy > 530) {
+        return -20;
+      } else if (markerDy > 420)
+        return -20;
+      else if (markerDy > 250)
+        return -10;
+      else if (markerDy > 120)
+        return -14;
+      else
+        return -10; // Default for very low dy values or unspecified conditions
+    }
+    else if (screenHeight >= 750 && screenHeight < 880) {
+      return 2;
+    } else {
+      return 10; // Default for larger screens
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final Size screenSize = MediaQuery.of(context).size;
+
+    double baseWidth = 411;
+    double baseHeight = 866;
+    double xProportion = (widget.markerPosition?.dx ?? 0) / baseWidth;
+    double yProportion = (widget.markerPosition?.dy ?? 0) / baseHeight;
+
+    double yAdjustment =
+        calculateYAdjustment(screenSize.height, widget.markerPosition?.dy ?? 0);
+
+    print(screenSize);
+
     return GestureDetector(
-      onDoubleTap: _onDoubleTap,
+      onDoubleTapDown: _onDoubleTapDown,
       child: InteractiveViewer(
         transformationController: _controller,
         panEnabled: true,
@@ -91,14 +164,14 @@ void _zoomToLocation() {
           children: [
             Image.asset(
               'lib/images/Mapa_final.png',
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
+              width: screenSize.width,
+              height: screenSize.height,
               fit: BoxFit.fill,
             ),
             if (widget.markerPosition != null)
               Positioned(
-                left: widget.markerPosition!.dx,
-                top: widget.markerPosition!.dy,
+                left: xProportion * screenSize.width,
+                top: yProportion * screenSize.height + yAdjustment,
                 child: const Opacity(
                   opacity: 0.8,
                   child: Icon(Icons.location_pin, color: Colors.red, size: 30),
@@ -110,4 +183,3 @@ void _zoomToLocation() {
     );
   }
 }
-
