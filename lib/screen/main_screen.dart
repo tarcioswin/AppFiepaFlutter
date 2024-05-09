@@ -4,6 +4,7 @@ import 'about_screen.dart';
 import 'events_data.dart';
 import 'map_screen.dart';
 import 'company_data.dart';
+import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -249,153 +250,172 @@ Map<String, List<Map<String, String>>> groupEventsByLocation(
   return eventsByLocation;
 }
 
+
 class AgendaScreen extends StatelessWidget {
   const AgendaScreen({super.key});
+
+  String formatEventTitle(int index) {
+  // This function will convert 0 -> "1º dia", 1 -> "2º dia", etc.
+  int dayNumber = index + 1;
+  return "Programação do $dayNumber${dayNumber == 1 ? "º" : "º"} dia do Evento";
+}
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView.builder(
-        itemCount: eventsData.length,
-        itemBuilder: (context, index) {
-          final eventDay = eventsData[index];
-          final List<Widget> detailWidgets =
-              eventDay['details'].map<Widget>((detail) {
-            List<String> speakerImages =
-                List<String>.from(detail['speakerImages'] ?? []);
-            List<String> speakerNames =
-                List<String>.from(detail['speakerNames'] ?? []);
-            String title = detail['title'] ?? 'No Title Provided';
-            List<TextSpan> titleTextSpans = _formatTitle(title);
-            String eventType = detail['type'] ?? 'Unknown';
-            IconData eventTypeIcon =
-                eventType == "Painel" ? Icons.group : Icons.speaker_notes;
-
-            return TimelineTile(
-              alignment: TimelineAlign.manual,
-              lineXY: 0.1,
-              isFirst: eventDay['details'].indexOf(detail) == 0,
-              isLast: eventDay['details'].indexOf(detail) ==
-                  eventDay['details'].length - 1,
-              indicatorStyle: const IndicatorStyle(
-                width: 20,
-                color: Colors.green,
-                padding: EdgeInsets.all(6),
-              ),
-              beforeLineStyle: const LineStyle(
-                color: Color.fromARGB(255, 230, 9, 9),
-                thickness: 1.5,
-              ),
-              endChild: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        const Icon(Icons.event,
-                            color: Color.fromARGB(255, 54, 73, 244)),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            title, // Use your title variable or the method that retrieves the title
-                            textAlign: TextAlign.left,
-                            style: const TextStyle(
-                              fontSize: 14, // Set your desired font size
-                              color: Colors.black, // Set your desired color
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 4),
-                    Row(
-                      children: [
-                        const Icon(Icons.access_time,
-                            color: Color.fromARGB(255, 7, 131, 17)),
-                        const SizedBox(width: 8),
-                        Text(detail['time'] ?? 'No Time Provided'),
-                      ],
-                    ),
-                    const SizedBox(height: 4),
-                    Row(
-                      children: [
-                        const Icon(Icons.place, color: Colors.red),
-                        const SizedBox(width: 8),
-                        Expanded(
-                            child: Text(
-                                detail['location'] ?? 'No Location Provided')),
-                      ],
-                    ),
-                    const SizedBox(height: 4),
-                    Row(
-                      children: [
-                        Icon(eventTypeIcon),
-                        const SizedBox(width: 4),
-                        Text(eventType),
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-                    // Horizontal list for speaker images
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: List.generate(speakerImages.length, (index) {
-                          return Padding(
-                            padding: const EdgeInsets.only(right: 8.0),
-                            child: GestureDetector(
-                              onTap: () => _showImageDialog(context,
-                                  speakerImages[index], speakerNames[index]),
-                              child: CircleAvatar(
-                                backgroundImage:
-                                    AssetImage(speakerImages[index]),
-                                radius: 24,
-                              ),
-                            ),
-                          );
-                        }),
-                      ),
-                    ),
-                  ],
+      body: CustomScrollView(
+        slivers: [
+          for (int index = 0; index < eventsData.length; index++)
+            SliverStickyHeader(
+              header: Container(
+                height: 60,
+                color: const Color.fromARGB(255, 227, 229, 231),
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  eventsData[index]['date'],
+                  style: const TextStyle(color: Color.fromARGB(255, 2, 2, 2), fontWeight: FontWeight.bold, fontSize: 18),
                 ),
               ),
-            );
-          }).toList();
-
-          return ExpansionTile(
-            title: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                eventDay['date'],
-                style:
-                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              sliver: SliverToBoxAdapter(
+                child: ExpansionTile(
+                  title: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      formatEventTitle(index),  
+                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  children: _buildDetailWidgets(context, eventsData[index]['details']),
+                ),
               ),
             ),
-            children: detailWidgets,
-          );
-        },
+        ],
       ),
     );
   }
 
-  List<TextSpan> _formatTitle(String title) {
-    // Check for multiple prefixes and apply bold formatting
-    const List<String> boldPrefixes = ["Palestra:", "Painel:"];
-    for (String prefix in boldPrefixes) {
-      if (title.startsWith(prefix)) {
-        return [
-          TextSpan(
-              text: prefix,
-              style: const TextStyle(fontWeight: FontWeight.bold)),
-          TextSpan(text: title.substring(prefix.length)),
-        ];
-      }
-    }
-    return [TextSpan(text: title)];
+  List<Widget> _buildDetailWidgets(BuildContext context, List<Map<String, dynamic>> details) {
+    return details.asMap().entries.map<Widget>((entry) {
+      int idx = entry.key;
+      var detail = entry.value;
+      List<String> speakerImages = List<String>.from(detail['speakerImages'] ?? []);
+      List<String> speakerNames = List<String>.from(detail['speakerNames'] ?? []);
+      List<String> speakerCompanies = List<String>.from(detail['speakerCompanies'] ?? []);
+      String title = detail['title'] ?? 'No Title Provided';
+      String eventType = detail['type'] ?? 'Unknown';
+      IconData eventTypeIcon = eventType == "Painel" ? Icons.group : Icons.speaker_notes;
+
+      Color bgColor = idx % 2 == 0 ? const Color.fromARGB(255, 245, 245, 245) : Colors.lightGreen.shade100;
+
+      return TimelineTile(
+        alignment: TimelineAlign.manual,
+        lineXY: 0.1,
+        isFirst: idx == 0,
+        isLast: idx == details.length - 1,
+        indicatorStyle: const IndicatorStyle(
+          width: 20,
+          color: Colors.green,
+          padding: EdgeInsets.all(6),
+        ),
+        beforeLineStyle: const LineStyle(
+          color: Color.fromARGB(255, 230, 9, 9),
+          thickness: 1.5,
+        ),
+        endChild: Container(
+          color: bgColor,
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  const Icon(Icons.event, color: Color.fromARGB(255, 54, 73, 244)),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      title,
+                      textAlign: TextAlign.left,
+                      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 4),
+              Row(
+                children: [
+                  const Icon(Icons.access_time, color: Color.fromARGB(255, 7, 131, 17)),
+                  const SizedBox(width: 8),
+                  Text(detail['time'] ?? 'No Time Provided'),
+                ],
+              ),
+              const SizedBox(height: 4),
+              Row(
+                children: [
+                  const Icon(Icons.place, color: Colors.red),
+                  const SizedBox(width: 8),
+                  Expanded(child: Text(detail['location'] ?? 'No Location Provided')),
+                ],
+              ),
+              const SizedBox(height: 4),
+              Row(
+                children: [
+                  Icon(eventTypeIcon),
+                  const SizedBox(width: 4),
+                  Text(eventType),
+                ],
+              ),
+              const SizedBox(height: 10),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: List.generate(speakerImages.length, (index) {
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 8.0),
+                      child: GestureDetector(
+                        onTap: () => _showImageDialog(
+                            context,
+                            speakerImages[index],
+                            speakerNames[index],
+                            speakerCompanies[index]),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            CircleAvatar(
+                                backgroundImage: AssetImage(speakerImages[index]),
+                                radius: 24),
+                            const SizedBox(height: 4),
+                            ...speakerNames[index].split(" ").map(
+                              (namePart) => Text(
+                                namePart,
+                                style: const TextStyle(fontSize: 12, color: Colors.black),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                            const SizedBox(height: 2),
+                            ...speakerCompanies[index].split(" ").map(
+                              (companyPart) => Text(
+                                companyPart,
+                                style: const TextStyle(fontSize: 12, color: Colors.grey),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }).toList();
   }
 
-  void _showImageDialog(
-      BuildContext context, String imagePath, String speakerName) {
+  void _showImageDialog(BuildContext context, String imagePath, String speakerName, String speakerCompany) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -408,13 +428,10 @@ class AgendaScreen extends StatelessWidget {
                 right: -40.0,
                 top: -40.0,
                 child: InkResponse(
-                  onTap: () {
-                    Navigator.of(context).pop();
-                  },
+                  onTap: () => Navigator.of(context).pop(),
                   child: const CircleAvatar(
-                    backgroundColor: Colors.red,
-                    child: Icon(Icons.close, color: Colors.white),
-                  ),
+                      backgroundColor: Colors.red,
+                      child: Icon(Icons.close, color: Colors.white)),
                 ),
               ),
               Container(
@@ -430,7 +447,9 @@ class AgendaScreen extends StatelessWidget {
                           style: const TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 16)),
                     ),
-                    // Optionally add more content here
+                    Text(speakerCompany,
+                        style: const TextStyle(
+                            fontSize: 14)), // Displaying the company name
                   ],
                 ),
               ),
