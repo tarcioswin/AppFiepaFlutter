@@ -67,3 +67,4 @@ final Map<String, Offset> companyPositions = {
 
 // List of company names (if needed separately)
 final List<String> companyNames = companyPositions.keys.toList();
+

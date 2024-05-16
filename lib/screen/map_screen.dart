@@ -13,17 +13,38 @@ class MapScreen extends StatefulWidget {
   State<MapScreen> createState() => _MapScreenState();
 }
 
-class _MapScreenState extends State<MapScreen> {
+class _MapScreenState extends State<MapScreen>
+    with SingleTickerProviderStateMixin {
   final TransformationController _controller = TransformationController();
   final double _zoomInFactor = 2.5;
+
+  AnimationController? _blinkController;
+  Animation<double>? _blinkAnimation;
 
   @override
   void initState() {
     super.initState();
+
+    _blinkController = AnimationController(
+      duration: const Duration(seconds: 1),
+      vsync: this,
+      // Repeats the animation forward and then in reverse
+      animationBehavior: AnimationBehavior.preserve,
+    )..repeat(reverse: true);
+
+    _blinkAnimation =
+        Tween<double>(begin: 0.0, end: 1.0).animate(_blinkController!);
+
     // Ensure the map is centered on the marker position after the first frame.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _zoomToLocation();
     });
+  }
+
+  @override
+  void dispose() {
+    _blinkController?.dispose();
+    super.dispose();
   }
 
   // Handles double tap to zoom in at the center of the current view.
@@ -107,7 +128,7 @@ class _MapScreenState extends State<MapScreen> {
         return -20;
       else
         return -20; // Default for very low dy values or unspecified conditions
-    }else if  (screenHeight >= 550 && screenHeight < 650) {
+    } else if (screenHeight >= 550 && screenHeight < 650) {
       if (markerDy > 530) {
         return -35;
       } else if (markerDy > 420)
@@ -118,7 +139,7 @@ class _MapScreenState extends State<MapScreen> {
         return -14;
       else
         return -10; // Default for very low dy values or unspecified conditions
-    }else if  (screenHeight >= 650 && screenHeight < 750) {
+    } else if (screenHeight >= 650 && screenHeight < 750) {
       if (markerDy > 530) {
         return -20;
       } else if (markerDy > 420)
@@ -129,8 +150,7 @@ class _MapScreenState extends State<MapScreen> {
         return -14;
       else
         return -10; // Default for very low dy values or unspecified conditions
-    }
-    else if (screenHeight >= 750 && screenHeight < 880) {
+    } else if (screenHeight >= 750 && screenHeight < 880) {
       return 2;
     } else {
       return 10; // Default for larger screens
@@ -148,8 +168,6 @@ class _MapScreenState extends State<MapScreen> {
 
     double yAdjustment =
         calculateYAdjustment(screenSize.height, widget.markerPosition?.dy ?? 0);
-
-    print(screenSize);
 
     return GestureDetector(
       onDoubleTapDown: _onDoubleTapDown,
@@ -172,9 +190,10 @@ class _MapScreenState extends State<MapScreen> {
               Positioned(
                 left: xProportion * screenSize.width,
                 top: yProportion * screenSize.height + yAdjustment,
-                child: const Opacity(
-                  opacity: 0.8,
-                  child: Icon(Icons.location_pin, color: Colors.red, size: 30),
+                child: FadeTransition(
+                  opacity: _blinkAnimation!,
+                  child: const Icon(Icons.location_pin,
+                      color: Colors.red, size: 30),
                 ),
               ),
           ],

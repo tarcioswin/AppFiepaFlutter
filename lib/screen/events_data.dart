@@ -4,7 +4,7 @@ final List<Map<String, dynamic>> eventsData = [
     'date': '23/05 | Quinta-feira',
     'details': [
             {
-        'time': '09h00',
+        'time': ' 09h00',
         'title':
             'Capacitação na Plantaforma de Inventário de Emissões de GEE',
         'location': 'Sala Multiuso 11',
@@ -18,7 +18,7 @@ final List<Map<String, dynamic>> eventsData = [
         "speakerImages": ["lib/images/23_speaker44.png","lib/images/23_speaker45.png",
         "lib/images/23_speaker46.png","lib/images/23_speaker47.png" ,"lib/images/23_speaker48.png","lib/images/23_speaker49.png","lib/images/23_speaker50.png"],
         "speakerNames": ["Suze Oliveira", "Rodrigo Nasser","Priscilla Vieira","Dilma Conceição","Nazareno Neves","Sandra Costa","Rodrigo Garcia"],
-        "speakerCompanies": ["CESUPA  ","ALMÁA ENG. ","MLX UNIFORMES ","APROCAMP  ","COOPROCAMP  ","EQUATORIAL ENERGIA ","SMC SERVIÇOS (Mediador)"],
+        "speakerCompanies": ["CESUPA  ","ALMÁA ENG. ","MLX UNIFORMES ","APROCAMP  ","COOPROCAMP  ","EQUATORIAL ENERGIA ","SMC ENGENHARIA (Mediador)"],
         "type": "Painel"
       },
             {
@@ -46,9 +46,9 @@ final List<Map<String, dynamic>> eventsData = [
         'title':
             'Negócios e Sustentabilidade: uma visão estratégica da indústria',
         'location': 'Palco Principal',
-        "speakerImages": ["lib/images/23_speaker2.png","lib/images/23_speaker3.png","lib/images/23_speaker4.png","lib/images/23_speaker5.png"],
-        "speakerNames": ["Alex Carvalho","Raul Jungmann","Jorge Viana","Jefferson Gomes"],
-        "speakerCompanies": ["FIEPA ","IBRAM ","APEX/BRASIL ","CNI (Mediador)"],
+        "speakerImages": ["lib/images/23_speaker2.png","lib/images/23_speaker3.png","lib/images/23_speaker5.png"],
+        "speakerNames": ["Alex Carvalho","Raul Jungmann","Jefferson Gomes"],
+        "speakerCompanies": ["FIEPA ","IBRAM ","CNI (Mediador)"],
         "type": "Painel"
       },
             {
@@ -66,9 +66,9 @@ final List<Map<String, dynamic>> eventsData = [
         'title':
             'Reforma Tributária: impactos, estratégias e perspectivas para o desenvolvimento econômico',
         'location': 'Palco 1',
-        "speakerImages": ["lib/images/23_speaker6.png","lib/images/23_speaker7.png","lib/images/23_speaker8.png"],
-        "speakerNames": ["Esperando Confirmação","René Júnior","Odilardo Júnior"],
-        "speakerCompanies": [" ","SEFA ","FIEPA (Mediardor)"],
+        "speakerImages": ["lib/images/23_speaker7.png","lib/images/23_speaker6.png","lib/images/23_speaker8.png"],
+        "speakerNames": ["René Júnior","Afonso Lobato","Odilardo Júnior"],
+        "speakerCompanies": ["SEFA ", "ADVOGADO ","FIEPA (Mediardor)"],
         "type": "Painel"
       },
       {
@@ -95,27 +95,27 @@ final List<Map<String, dynamic>> eventsData = [
         'time': '17h10',
         'title': 'ESG como pilar de competitividade e inovação das indústrias na Amazônia',
         'location': 'Palco 1',
-        'speakerImages': ['lib/images/23_speaker16.png', 'lib/images/23_speaker17.png', 'lib/images/23_speaker18.png', 'lib/images/23_speaker19.png', 'lib/images/23_speaker20.png'],
-        'speakerNames': ['Artur Soares', 'Luciano Gomes', 'Marilza Cruz','Sandra Costa', 'Eurípedes Amorim'],
-        'speakerCompanies': ['BRAZAURO ', 'SOLAR COCA-COLA', 'VALE ', 'EQUATORIAL ','REDES/FIEPA (Mediador)'],
+        'speakerImages': ['lib/images/23_speaker16.png', 'lib/images/23_speaker17.png', 'lib/images/23_speaker18.png', 'lib/images/23_speaker19.png', 'lib/images/A23_speaker1.png', 'lib/images/23_speaker20.png'],
+        'speakerNames': ['Artur Soares', 'Luciano Gomes', 'Marilza Cruz','Sandra Costa','Alcileia Farias', 'Eurípedes Amorim'],
+        'speakerCompanies': ['BRAZAURO ', 'SOLAR COCA-COLA', 'VALE ', 'EQUATORIAL ', 'FIEC ','REDES/FIEPA (Mediador)'],
         'type': 'Painel'
       },
       {
         'time': '17h10',
         'title': 'Nova indústria Brasil: oportunidades e desafios para o desenvolvimento industrial nacional',
         'location': 'Palco 2',
-        'speakerImages': ['lib/images/23_speaker21.png', 'lib/images/23_speaker22.png', 'lib/images/23_speaker23.png', 'lib/images/23_speaker24.png'],
-        'speakerNames': ['Rafael Lucchesi', 'Thiago Peroba', 'Kallil Maia','Mdic-Governo Federal'],
-        'speakerCompanies': ['CNI', 'BNDS', 'FINEP', 'CONFIRMAR'],
+        'speakerImages': ['lib/images/23_speaker21.png', 'lib/images/23_speaker22.png', 'lib/images/23_speaker23.png'],
+        'speakerNames': ['Rafael Lucchesi', 'Thiago Peroba', 'Kallil Maia'],
+        'speakerCompanies': ['CNI', 'BNDS', 'FINEP'],
         'type': 'Painel'
       },
       {
         'time': '17h10',
         'title': 'Combustível do futuro: inovação e sustentabilidade na era da mobilidade',
         'location': 'Palco 3',
-        'speakerImages': ['lib/images/23_speaker25.png', 'lib/images/23_speaker26.png', 'lib/images/23_speaker27.png'],
-        'speakerNames': ['Paulo Steffen', 'Leonardo Zilio', 'Davi Bomtempo'],
-        'speakerCompanies': ['NEW FORTRESS ENERGY', 'OLEOPLAN  ', 'CNI  '],
+        'speakerImages': ['lib/images/A23_speaker2.png', 'lib/images/23_speaker26.png', 'lib/images/23_speaker27.png'],
+        'speakerNames': ['Milton Campelo', 'Leonardo Zilio', 'Davi Bomtempo'],
+        'speakerCompanies': ['SINDICANALCOOL', 'OLEOPLAN', 'CNI'],
         'type': 'Painel'
       },
             {
@@ -124,31 +124,40 @@ final List<Map<String, dynamic>> eventsData = [
         'location': 'Sala Multiuso 11',
         "type": "Lançamento"
       },
+                  {
+        'time': '18h00',
+        'title': 'Produtividade: o caminho para a sustentabilidade dos pequenos negócios',
+        'location': 'Sala Multiuso 11',
+        'speakerImages': ['lib/images/A23_speaker8.png', 'lib/images/A23_speaker9.png'],
+        'speakerNames': ['Francisco Brito', 'Guilherme Pinheiro'],
+        'speakerCompanies': ['SEBRAE', 'SESI/SENAI'],
+        "type": "Palestra"
+      },
       {
         'time': '18h20',
         'title': 'O impacto da Transição Energética na indústria e as oportunidades futuras',
         'location': 'Palco 1',
-        'speakerImages': ['lib/images/23_speaker28.png', 'lib/images/23_speaker29.png', 'lib/images/23_speaker30.png', 'lib/images/23_speaker31.png','lib/images/23_speaker32.png'],
-        'speakerNames': ['Roberto Valer', 'Rodolpho Bastos', 'Rodrigo Cavassin','Wandy Charone','Daniel Sobrinho'],
-        'speakerCompanies': ['HUAWEI ', 'SEMAS ', 'VOTORANTIM CIMENTOS','NORTE ENERGIA', 'ABSOLAR/FIEPA (Mediador)'],
+        'speakerImages': ['lib/images/A23_speaker3.png', 'lib/images/23_speaker29.png','lib/images/23_speaker28.png', 'lib/images/23_speaker30.png','lib/images/23_speaker32.png'],
+        'speakerNames': [ 'Anderson Baranov','Rodolfo Bastos','Roberto Valer', 'Rodrigo Cavassin','Daniel Sobrinho'],
+        'speakerCompanies': [ 'HYDRO ','SEMAS ','HUAWEI ', 'VOTORANTIM CIMENTOS', 'ABSOLAR/FIEPA (Mediador)'],
         'type': 'Painel'
       },
       {
         'time': '18h20',
         'title': 'A descarbonização da economia como estratégia de sustentabilidade industrial',
         'location': 'Palco 2',
-        'speakerImages': ['lib/images/23_speaker37.png','lib/images/23_speaker33.png', 'lib/images/23_speaker34.png', 'lib/images/23_speaker35.png', 'lib/images/23_speaker36.png'],
-        'speakerNames': ['Isabela Morbach','Ian Corrêa', 'Letícia Kawanami', 'Carlos Neves','Milton Campelo'],
-        'speakerCompanies': [ 'CCS BRASIL (Mediadora)','SINOBRAS  ', 'CARGILL  ', 'HYDRO  ','SINDICANÁLCOOL  '],
+        'speakerImages': ['lib/images/23_speaker33.png', 'lib/images/A23_speaker5.png', 'lib/images/23_speaker35.png', 'lib/images/A23_speaker4.png'],
+        'speakerNames': ['Ian Corrêa', 'Ana Nogueira', 'Carlos Neves','Rodrigo Pinho'],
+        'speakerCompanies': [ 'SINOBRAS  ', 'CARGILL  ', 'HYDRO  ','NEW FORTRESS ENERGY'],
         'type': 'Painel'
       },
-            {
+       {
         'time': '18h20',
         'title': 'Responsabilidade Social na Indústria',
         'location': 'Palco 3',
-        'speakerImages': ['lib/images/23_speaker38.png', 'lib/images/23_speaker39.png', 'lib/images/23_speaker40.png', 'lib/images/23_speaker41.png'],
-        'speakerNames': ['Marcella Novaes', 'Isabela Dias', 'Bárbara Espínola','Ana Alves'],
-        'speakerCompanies': ['AGROPALMA ', 'NATURA ', 'ALCOA ','VALE/FIEPA (Mediadora)'],
+        'speakerImages': ['lib/images/A23_speaker6.png', 'lib/images/23_speaker39.png', 'lib/images/A23_speaker7.png', 'lib/images/23_speaker41.png'],
+        'speakerNames': ['Thomás Sottili', 'Isabela Dias', 'Emerson Rocha','Ana Alves'],
+        'speakerCompanies': ['NORTE ENERGIA', 'NATURA ', 'ALCOA ','VALE/FIEPA (Mediadora)'],
         'type': 'Painel'
       },
     ],
@@ -157,7 +166,7 @@ final List<Map<String, dynamic>> eventsData = [
     'date': '24/05 | Sexta-feira',
     'details': [
             {
-        'time': '14h00',
+        'time': '13h00',
         'title':
             'Rodada de Crédito NAC-FIEPA',
         'location': 'Sala Pará',
@@ -169,7 +178,7 @@ final List<Map<String, dynamic>> eventsData = [
             ' ESG e o Papel Fundamental das Organizações para o Desenvolvimento Sustentável',
         'location': 'Palco Principal',
         "speakerImages": ["lib/images/speaker1.png"],
-        "speakerNames": ["Palestrante"],
+        "speakerNames": ["Rachel Maia"],
         "speakerCompanies": [""],
         "type": "Palestra"
       },

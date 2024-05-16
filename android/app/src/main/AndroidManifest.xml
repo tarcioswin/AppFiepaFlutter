@@ -6,6 +6,7 @@
 
 
     <application
+        android:enableOnBackInvokedCallback="true"
         android:label="appfiepa"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_new_icon">
