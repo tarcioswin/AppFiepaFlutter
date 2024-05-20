@@ -192,7 +192,7 @@ class _MainScreenState extends State<MainScreen> {
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
-          backgroundColor: const Color.fromARGB(255, 1, 138, 24),
+          backgroundColor: Color.fromARGB(255, 5, 63, 15),
           title: _isSearching
               ? _buildSearchField()
               : const Text("Feira da Indústria do Pará",

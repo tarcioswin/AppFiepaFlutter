@@ -56,9 +56,9 @@ final List<Map<String, dynamic>> eventsData = [
         'title':
             'Sustentabilidade e Inovação para a indústria amazônica',
         'location': 'Sala Multiuso 10',
-        "speakerImages": ["lib/images/23_speaker51.png"],
-        "speakerNames": ["José Matos"],
-        "speakerCompanies": ["Via Floresta"],
+        "speakerImages": ["lib/images/A23_speaker10.png"],
+        "speakerNames": ["Elaine Cardoso"],
+        "speakerCompanies": ["ViaFloresta"],
         "type": "Palestra"
       },
         {

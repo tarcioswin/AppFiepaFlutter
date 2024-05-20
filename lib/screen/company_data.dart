@@ -2,8 +2,8 @@
 import 'dart:ui';
 
 final Map<String, Offset> companyPositions = {
-  'SINQUIFARMA': const Offset(325, 565),
-  'AVAO': const Offset(335, 520),
+  'SINQUIFARMA': const Offset(230, 70),
+  'AVAO': const Offset(125, 110),
   'PARÁ SOLIDÁRIO': const Offset(335, 535),
   'EB SOLAR': const Offset(335, 505),
   'F.V.CIGANAS': const Offset(335, 490),

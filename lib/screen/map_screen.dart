@@ -181,7 +181,7 @@ class _MapScreenState extends State<MapScreen>
           alignment: Alignment.center,
           children: [
             Image.asset(
-              'lib/images/Mapa_final.png',
+              'lib/images/Mapa.png',
               width: screenSize.width,
               height: screenSize.height,
               fit: BoxFit.fill,
